@@ -5749,4 +5749,31 @@ class Component extends DCLogic {
 </script>
 
 
-</body></html>
+<div id="ailine-lock" style="position:fixed;inset:0;z-index:2147483647;background:#0B0F13;display:flex;align-items:center;justify-content:center;padding:24px;font-family:'Noto Sans KR',sans-serif">
+<form id="ailine-lock-f" style="width:100%;max-width:340px;background:#11161C;border:1px solid #1E262F;border-radius:18px;padding:26px;color:#EBF0F3;box-sizing:border-box">
+<div style="font-size:20px;font-weight:700;margin-bottom:4px">AILINE Planner</div>
+<div style="font-size:13px;color:#8B99A6;margin-bottom:18px">비밀번호를 입력하세요.</div>
+<input id="ailine-lock-i" type="password" inputmode="numeric" autocomplete="off" placeholder="비밀번호" style="width:100%;box-sizing:border-box;background:#1A2129;border:1px solid #2B3540;border-radius:12px;padding:13px 14px;color:#EBF0F3;font-size:16px;outline:none">
+<label style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:#8B99A6;margin:12px 0 4px"><input id="ailine-lock-r" type="checkbox"> 이 기기에서 기억하기</label>
+<div id="ailine-lock-e" style="min-height:18px;font-size:12.5px;color:#FF8066;margin:6px 0"></div>
+<button type="submit" style="width:100%;border:none;border-radius:12px;padding:13px;background:#3FC8BC;color:#07211D;font-size:14px;font-weight:700;cursor:pointer">열기</button>
+</form></div>
+<script>
+(function(){
+var OK="7c7d1071b0f42834d7f62ee8977dfc39727f3acc555104f738f89cdd117f0819", K="ailine.unlock.v1", box=document.getElementById('ailine-lock');
+function open(){ box.remove(); document.documentElement.style.overflow=''; }
+function has(){ try{ return localStorage.getItem(K)===OK || sessionStorage.getItem(K)===OK; }catch(e){ return false; } }
+async function sha(t){ var b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join(''); }
+if(has()){ open(); return; }
+document.documentElement.style.overflow='hidden';
+var f=document.getElementById('ailine-lock-f'), i=document.getElementById('ailine-lock-i'), e=document.getElementById('ailine-lock-e');
+setTimeout(function(){ try{ i.focus(); }catch(x){} },50);
+f.addEventListener('submit', async function(ev){
+  ev.preventDefault();
+  if(!(window.crypto && crypto.subtle)){ e.textContent='보안 연결(https) 주소에서 열어 주세요.'; return; }
+  var d=await sha('ailine-v1:'+i.value.trim());
+  if(d===OK){ try{ (document.getElementById('ailine-lock-r').checked?localStorage:sessionStorage).setItem(K,OK); }catch(x){} open(); }
+  else { e.textContent='비밀번호가 올바르지 않습니다.'; i.value=''; i.focus(); }
+});
+})();
+</script></body></html>

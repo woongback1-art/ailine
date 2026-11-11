@@ -4904,12 +4904,12 @@ class Component extends DCLogic {
   }
   async detectBest(img, view){
     const W = img.naturalWidth, H = img.naturalHeight;
-    const kinds = view === 'side' ? ['heavy','full'] : ['full'];
+    const kinds = ['heavy','full'];
     let best = null, bestScore = -1, lastErr = null, loaded = 0;
     for(const kind of kinds){
       let lmk;
       try{
-        if(kind === 'heavy' && !(this._lms && this._lms.heavy)) this.setDetect(view,'loading','측면 인식용 고정밀 모델을 불러오는 중입니다... (처음 한 번만, 용량이 커서 1분쯤 걸릴 수 있어요)');
+        if(kind === 'heavy' && !(this._lms && this._lms.heavy)) this.setDetect(view,'loading','고정밀 인식 모델을 불러오는 중입니다... (처음 한 번만, 용량이 커서 1분쯤 걸릴 수 있어요)');
         lmk = await this.ensureLandmarker(kind);
       }catch(e){ lastErr = e; continue; }
       loaded++;
@@ -4962,7 +4962,8 @@ class Component extends DCLogic {
 
       if(view === 'front'){
         const map = {earL:7, earR:8, shoL:11, shoR:12, hipL:23, hipR:24, kneeL:25, kneeR:26, ankL:27, ankR:28};
-        for(const k in map){ pts.front[k] = conv(P(map[k])); used.push(vis(map[k])); }
+        const fn = {earL:'좌 귀', earR:'우 귀', shoL:'좌 어깨', shoR:'우 어깨', hipL:'좌 골반', hipR:'우 골반', kneeL:'좌 무릎', kneeR:'우 무릎', ankL:'좌 발목', ankR:'우 발목'};
+        for(const k in map){ pts.front[k] = conv(P(map[k])); used.push(vis(map[k])); if(vis(map[k]) < 0.5) weak.push(fn[k]); }
       } else if(view === 'side'){
         const leftScore = [7,11,23,25,27].reduce((s,i)=>s+vis(i),0);
         const rightScore = [8,12,24,26,28].reduce((s,i)=>s+vis(i),0);
@@ -4980,6 +4981,7 @@ class Component extends DCLogic {
         pts.back.hipL = conv(hpL); pts.back.hipR = conv(hpR);
         pts.back.ankMid = conv(mid(P(27), P(28)));
         used = [11,12,23,24,27,28].map(vis);
+        [[11,'좌 어깨'],[12,'우 어깨'],[23,'좌 골반'],[24,'우 골반'],[27,'좌 발목'],[28,'우 발목']].forEach(([i,n])=>{ if(vis(i) < 0.5) weak.push(n); });
       }
 
       const cal = deepClone(this.state.cal);

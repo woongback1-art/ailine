@@ -5179,9 +5179,9 @@ class Component extends DCLogic {
   }
   exportDb(){
     try{
-      const data = {app:'ACPP', version:2, exported:new Date().toISOString(), members:Object.values(this.state.members), records:this.state.records};
+      const data = {app:'AILINE', version:2, exported:new Date().toISOString(), members:Object.values(this.state.members), records:this.state.records};
       const url = URL.createObjectURL(new Blob([JSON.stringify(data)], {type:'application/json'}));
-      const a = document.createElement('a'); a.href = url; a.download = 'ACPP_회원데이터_'+new Date().toISOString().slice(0,10)+'.json';
+      const a = document.createElement('a'); a.href = url; a.download = 'AILINE_회원데이터_'+new Date().toISOString().slice(0,10)+'.json';
       document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 4000);
       this.setState({memberMsg:'회원 '+Object.keys(this.state.members).length+'명, 평가 기록 '+this.state.records.length+'건을 파일로 저장했습니다. 다른 기기로 옮기거나 백업으로 보관하세요.'});
     }catch(e){ this.setState({memberMsg:'백업 파일을 만들지 못했습니다.'}); }
@@ -5197,7 +5197,7 @@ class Component extends DCLogic {
         for(const r of d.records) if(r && r.id) await DBX.put('records', r);
         await this.loadAll();
         this.setState({memberMsg:'회원 '+d.members.length+'명, 평가 기록 '+d.records.length+'건을 불러왔습니다.'});
-      }catch(err){ this.setState({memberMsg:'백업 파일을 읽지 못했습니다. ACPP에서 저장한 JSON 파일인지 확인해 주세요.'}); }
+      }catch(err){ this.setState({memberMsg:'백업 파일을 읽지 못했습니다. AILINE에서 저장한 JSON 파일인지 확인해 주세요.'}); }
     };
     rd.readAsText(f); e.target.value = '';
   }

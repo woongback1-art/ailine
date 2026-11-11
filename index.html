@@ -3641,6 +3641,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     <div style="flex:1"></div>
     <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--t5D6B78,#5D6B78)">{{ patientLine }}</div>
     <button sc-camel-on-click="{{ toggleTheme }}" title="화면 모드 전환" style="flex:none;display:flex;align-items:center;gap:6px;border:1px solid var(--t2B3540,#2B3540);background:transparent;color:var(--t8B99A6,#8B99A6);font-family:'Noto Sans KR',sans-serif;font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:999px;cursor:pointer">{{ themeLabel }}</button>
+    <button sc-camel-on-click="{{ logout }}" title="로그아웃" style="flex:none;border:1px solid var(--t2B3540,#2B3540);background:transparent;color:var(--t8B99A6,#8B99A6);border-radius:10px;padding:8px 12px;font-size:12.5px;font-family:inherit;cursor:pointer">로그아웃</button>
   </header>
 
   <main style="max-width:1240px;margin:0 auto;padding:26px 24px 0">
@@ -5630,6 +5631,7 @@ class Component extends DCLogic {
       downloadShare:()=>this.downloadShare(),
       printShare:()=>this.printShare(),
       hasShareMsg: !!s.shareMsg,
+      logout:()=>{ try{ localStorage.removeItem('ailine.unlock.v1'); sessionStorage.removeItem('ailine.unlock.v1'); }catch(e){} location.reload(); },
       goShare:()=>this.setState({screen:'share', shareMsg:''}),
 
       pName:s.patient.name, pAge:s.patient.age, pHeight:s.patient.height,
